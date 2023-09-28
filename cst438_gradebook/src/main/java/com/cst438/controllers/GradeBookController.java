@@ -138,6 +138,32 @@ public class GradeBookController {
 		return assignment;
 	}
 	
+	//Rest apis for adding, modifying and deleting an assignment.
+	public void addAssignment(int id, String name) {
+		
+	}
+	
+	public void modifyAssignment(int id, String name) {
+		
+	}
+
+	public void deleteAssignment(int id, String name) {
+	
+	}
+	
+	//Front end code to create a new assignment by entering course_id, assignment name and due date. Check the format of the due date for the form yyyy-mm-dd.
+	public void createNewAssignment(int course_id, String assignmentName, String dueDate) {
+		//date should be in the form yyyy-mm-dd
+		if(dueDate != "yyyy-mm-dd") {
+			return;
+		}else {
+			//Assignment assignment = new Assignment(course_id,assignmentName,dueDate);
+		}
+	}
+	
+	//Front end code to modify the assignment name and due date.
+
+	//Front end code to delete an assignment. Warn the instructor if the assignment has grades.
 	
 	private String letterGrade(double grade) {
 		if (grade >= 90) return "A";
