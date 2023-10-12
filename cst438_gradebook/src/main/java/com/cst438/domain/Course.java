@@ -1,12 +1,14 @@
 package com.cst438.domain;
 
 import java.util.List;
+import java.sql.Date;
 import java.util.ArrayList;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.security.auth.login.AccountNotFoundException;
 
 @Entity
 public class Course {
@@ -76,4 +78,35 @@ public class Course {
 				+ ", semester=" + semester + "]";
 	}
 	
+	public Assignment addAssignment(Course course, String name, Date dueDate) {
+        Assignment assignment = new Assignment();
+        assignment.setCourse(course);
+        assignment.setName(name);
+        assignment.setDueDate(dueDate);
+
+        // Save the assignment to the database
+        getAssignments().set(getAssignments().size(), assignment);
+        return(assignment);
+    }
+	
+	public Assignment updateAssignment(int assignmentId, String name, Date dueDate) throws AccountNotFoundException {
+        Assignment assignment = AssignmentRepository.findById(getAssignments(), assignmentId)
+            .orElseThrow(() -> new AccountNotFoundException("Assignment not found"));
+
+        // Update assignment details
+        assignment.setName(name);
+        assignment.setDueDate(dueDate);
+
+        // Save the updated assignment to the database
+        getAssignments().set(getAssignments().size(), assignment);
+        return assignment;
+    }
+	
+	public void deleteAssignment(int assignmentId) {
+        Assignment assignment = AssignmentRepository.findById(getAssignments(),assignmentId)
+            .orElseThrow();
+
+        // Delete the assignment from the database
+        getAssignments().set(assignmentId, null);
+    }
 }
