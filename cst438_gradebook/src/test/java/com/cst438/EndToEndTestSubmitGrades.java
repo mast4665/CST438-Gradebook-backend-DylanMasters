@@ -36,7 +36,111 @@ public class EndToEndTestSubmitGrades {
 	public static final int SLEEP_DURATION = 1000; // 1 second.
 	public static final String TEST_ASSIGNMENT_NAME = "db design";
 	public static final String NEW_GRADE = "99";
+	
 
+	@Test
+	public void addAssignmentTest() throws Exception {
+		System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_FILE_LOCATION);
+        WebDriver driver = new ChromeDriver();
+        driver.get(URL);
+        Thread.sleep(SLEEP_DURATION);
+
+        try {
+            // Perform steps to add a new assignment
+            // Locate and click the button to add an assignment
+            WebElement addAssignmentButton = driver.findElement(By.id("add-assignment-button"));
+            addAssignmentButton.click();
+            Thread.sleep(SLEEP_DURATION);
+
+            // Fill out the assignment details in the form (e.g., name, due date)
+            WebElement nameInput = driver.findElement(By.id("assignment-name-input"));
+            WebElement dueDateInput = driver.findElement(By.id("due-date-input"));
+
+            nameInput.sendKeys("New Assignment");
+            dueDateInput.sendKeys("2023-12-31");
+
+            // Submit the form
+            WebElement submitButton = driver.findElement(By.id("submit-assignment-button"));
+            submitButton.click();
+            Thread.sleep(SLEEP_DURATION);
+
+            // Verify that the new assignment is displayed on the page
+            WebElement newAssignmentElement = driver.findElement(By.xpath("//td[contains(text(),'New Assignment')]"));
+            assertThat(newAssignmentElement).isNotNull();
+
+        } finally {
+            driver.quit();
+        }
+	}
+
+	@Test
+	public void updateAssignmentTest() throws Exception {
+        // Initialize the WebDriver and navigate to the assignment you want to update
+        // This test assumes that an assignment with a specific name is already present on the page
+        // You should adapt this to your specific scenario
+        System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_FILE_LOCATION);
+        WebDriver driver = new ChromeDriver();
+        driver.get(URL);
+        Thread.sleep(SLEEP_DURATION);
+
+        try {
+            // Locate and click the assignment you want to update (e.g., based on assignment name)
+            WebElement assignmentToUpdate = driver.findElement(By.xpath("//td[contains(text(),'Assignment Name')]"));
+            assignmentToUpdate.click();
+            Thread.sleep(SLEEP_DURATION);
+
+            // Update the assignment details in the form (e.g., name, due date)
+            WebElement nameInput = driver.findElement(By.id("assignment-name-input"));
+            WebElement dueDateInput = driver.findElement(By.id("due-date-input"));
+
+            nameInput.clear();
+            nameInput.sendKeys("Updated Assignment Name");
+            dueDateInput.clear();
+            dueDateInput.sendKeys("2023-12-31");
+
+            // Submit the form
+            WebElement submitButton = driver.findElement(By.id("submit-assignment-button"));
+            submitButton.click();
+            Thread.sleep(SLEEP_DURATION);
+
+            // Verify that the assignment is updated
+            WebElement updatedAssignmentElement = driver.findElement(By.xpath("//td[contains(text(),'Updated Assignment Name')]"));
+            assertThat(updatedAssignmentElement).isNotNull();
+
+        } finally {
+            driver.quit();
+        }
+	}
+
+	@Test
+	public void deleteAssignmentTest() throws Exception {
+		// Initialize the WebDriver and navigate to the assignment you want to delete
+        // This test assumes that an assignment with a specific name is already present on the page
+        // You should adapt this to your specific scenario
+        System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_FILE_LOCATION);
+        WebDriver driver = new ChromeDriver();
+        driver.get(URL);
+        Thread.sleep(SLEEP_DURATION);
+
+        try {
+            // Locate and click the assignment you want to delete (e.g., based on assignment name)
+            WebElement assignmentToDelete = driver.findElement(By.xpath("//td[contains(text(),'Assignment Name')]"));
+            assignmentToDelete.click();
+            Thread.sleep(SLEEP_DURATION);
+
+            // Locate and click the button to delete the assignment
+            WebElement deleteButton = driver.findElement(By.id("delete-assignment-button"));
+            deleteButton.click();
+            Thread.sleep(SLEEP_DURATION);
+
+            // Verify that the assignment is deleted
+            boolean isAssignmentPresent = driver.findElements(By.xpath("//td[contains(text(),'Assignment Name')]")).isEmpty();
+            assertThat(isAssignmentPresent).isTrue();
+
+        } finally {
+            driver.quit();
+        }
+	}
 
 	@Test
 	public void addCourseTest() throws Exception {

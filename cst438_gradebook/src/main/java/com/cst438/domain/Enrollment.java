@@ -75,6 +75,17 @@ public class Enrollment {
 				+ course + "]";
 	}
 
+	public void setCourseId(int courseId) {
+		// TODO Auto-generated method stub
+		Course course = CourseRepository.findById(courseId);
+	    if (course != null) {
+	        this.course = course;
+	    } else {
+	        // Handle the case where the course with the given ID doesn't exist
+	        throw new IllegalArgumentException("Course with ID " + courseId + " not found.");
+	    }
+	}
+
 	
 	
 }
