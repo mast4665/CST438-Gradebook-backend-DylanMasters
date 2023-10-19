@@ -1,6 +1,7 @@
 package com.cst438.controllers;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.cst438.domain.Enrollment;
 import com.cst438.domain.GradeDTO;
 import com.cst438.domain.FinalGradeDTO;
 import com.cst438.services.RegistrationService;
+import java.security.Principal;
 
 @RestController
 @CrossOrigin 
@@ -139,17 +141,18 @@ public class GradeBookController {
 	}
 	
 	//Rest apis for adding, modifying and deleting an assignment.
-	public void addAssignment(int id, String name) {
-		
-	}
+//	public void addAssignment(int id, String name) {
+//		
+//	}
+//	
+//	public void modifyAssignment(int id, String name) {
+//		
+//	}
+//
+//	public void deleteAssignment(int id, String name) {
+//	
+//	}
 	
-	public void modifyAssignment(int id, String name) {
-		
-	}
-
-	public void deleteAssignment(int id, String name) {
-	
-	}
 	
 	//Front end code to create a new assignment by entering course_id, assignment name and due date. Check the format of the due date for the form yyyy-mm-dd.
 	public void createNewAssignment(int course_id, String assignmentName, String dueDate) {

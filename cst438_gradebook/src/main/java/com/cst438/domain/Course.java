@@ -1,6 +1,7 @@
 package com.cst438.domain;
 
 import java.util.List;
+import java.security.Principal;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -78,35 +79,103 @@ public class Course {
 				+ ", semester=" + semester + "]";
 	}
 	
-	public Assignment addAssignment(Course course, String name, Date dueDate) {
-        Assignment assignment = new Assignment();
-        assignment.setCourse(course);
-        assignment.setName(name);
-        assignment.setDueDate(dueDate);
-
-        // Save the assignment to the database
-        getAssignments().set(getAssignments().size(), assignment);
-        return(assignment);
-    }
+//	public Assignment addAssignment(Course course, String name, Date dueDate) {
+//        Assignment assignment = new Assignment();
+//        assignment.setCourse(course);
+//        assignment.setName(name);
+//        assignment.setDueDate(dueDate);
+//
+//        // Save the assignment to the database
+//        getAssignments().set(getAssignments().size(), assignment);
+//        return(assignment);
+//    }
 	
-	public Assignment updateAssignment(int assignmentId, String name, Date dueDate) throws AccountNotFoundException {
-        Assignment assignment = AssignmentRepository.findById(getAssignments(), assignmentId)
-            .orElseThrow(() -> new AccountNotFoundException("Assignment not found"));
+	public Assignment addAssignment(Course course, String name, Date dueDate, Principal principal) {
+	    // Check if the user is an instructor for the course
+	    if (!isInstructor(course, principal.getName())) {
+	        // Throw an exception or return an error response if unauthorized access
+	        throw new SecurityException("You don't have permission to add assignments to this course.");
+	    }
 
-        // Update assignment details
-        assignment.setName(name);
-        assignment.setDueDate(dueDate);
+	    Assignment assignment = new Assignment();
+	    assignment.setCourse(course);
+	    assignment.setName(name);
+	    assignment.setDueDate(dueDate);
 
-        // Save the updated assignment to the database
-        getAssignments().set(getAssignments().size(), assignment);
-        return assignment;
-    }
+	    // Save the assignment to the database
+	    getAssignments().set(getAssignments().size(), assignment);
+	    return assignment;
+	}
 	
-	public void deleteAssignment(int assignmentId) {
-        Assignment assignment = AssignmentRepository.findById(getAssignments(),assignmentId)
-            .orElseThrow();
+	private boolean isInstructor(Course course, String name) {
+		if(course.getInstructor() == name) {
+			return true;
+		}else {
+			return false;
+		}
+}
+//	public Assignment updateAssignment(int assignmentId, String name, Date dueDate) throws AccountNotFoundException {
+//        Assignment assignment = AssignmentRepository.findById(getAssignments(), assignmentId)
+//            .orElseThrow(() -> new AccountNotFoundException("Assignment not found"));
+//
+//        // Update assignment details
+//        assignment.setName(name);
+//        assignment.setDueDate(dueDate);
+//
+//        // Save the updated assignment to the database
+//        getAssignments().set(getAssignments().size(), assignment);
+//        return assignment;
+//    }
+	public Assignment updateAssignment(int assignmentId, String name, Date dueDate, Principal principal) {
+	    Assignment assignment = AssignmentRepository.findById(getAssignments(), assignmentId)
+	            .orElse(null);
 
-        // Delete the assignment from the database
-        getAssignments().set(assignmentId, null);
-    }
+	    if (assignment == null) {
+	        // Handle case when assignment is not found
+	        // You can return an error response or throw an exception
+	        throw new SecurityException("Assignment not found");
+	    }
+
+	    // Check if the user is an instructor for the course to which the assignment belongs
+	    if (!isInstructor(assignment.getCourse(), principal.getName())) {
+	        // Throw an exception or return an error response indicating unauthorized access
+	        throw new SecurityException("You don't have permission to update assignments for this course.");
+	    }
+
+	    // Update assignment details
+	    assignment.setName(name);
+	    assignment.setDueDate(dueDate);
+
+	    // Save the updated assignment to the database
+	    getAssignments().set(assignmentId, assignment);
+	    return assignment;
+	}
+
+	
+//	public void deleteAssignment(int assignmentId) {
+//        Assignment assignment = AssignmentRepository.findById(getAssignments(),assignmentId)
+//            .orElseThrow();
+//
+//        // Delete the assignment from the database
+//        getAssignments().set(assignmentId, null);
+//    }
+	public void deleteAssignment(int assignmentId, Principal principal) {
+	    Assignment assignment = AssignmentRepository.findById(getAssignments(), assignmentId)
+	            .orElse(null);
+
+	    if (assignment == null) {
+	        // assignment is not found
+	        throw new SecurityException("Assignment not found");
+	    }
+
+	    // Check if the user is an instructor for the course
+	    if (!isInstructor(assignment.getCourse(), principal.getName())) {
+	        // Throw an exception or return an error
+	        throw new SecurityException("You don't have permission to delete assignments for this course.");
+	    }
+
+	    // Delete the assignment from the database
+	    getAssignments().set(assignmentId, null);
+	}
+
 }
